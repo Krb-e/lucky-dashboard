@@ -607,7 +607,16 @@ function render(c,p,D){
      días (parámetros oh/oe y hasta el host del CDN), así que agrupar por imagen partiría el
      mismo anuncio en varias tarjetas dentro de un mismo período. */
   D.metaCur.forEach(x=>{const k=x.ad_name||x.ad_image_url||x.ad_creative_body||x.campaign_name||'(s/anuncio)';const a=ads[k]=ads[k]||{img:x.ad_image_url,titulo:x.ad_name||'Sin nombre',camp:x.campaign_name||'',link:x.ad_preview_link||'',copy:'',impr:0,spend:0,lpv:0,pur:0,val:0,v3:0,v100:0};if(!a.img&&x.ad_image_url)a.img=x.ad_image_url;if(!a.link&&x.ad_preview_link)a.link=x.ad_preview_link;if(!a.copy&&x.ad_creative_body)a.copy=x.ad_creative_body;a.impr+=+x.impressions||0;a.spend+=+x.amount_spent||0;a.lpv+=+x.landing_page_views||0;a.pur+=+x.website_purchases||0;a.val+=+x.purchases_conv_value||0;a.v3+=+x.video_view_3s||0;a.v100+=+x.video_watch_100||0;});
-  const list=Object.values(ads).sort((a,b)=>b.val-a.val).slice(0,5);
+  /* Solo anuncios que efectivamente corrieron. Detrics deja en la ventana de 90 días las
+     filas de anuncios pausados o sin entrega: este mes, 23 de 40 vienen con inversión e
+     impresiones en cero y no hay nada que analizar en ellos.
+     El desempate por inversión importa: sin filtro, todos los que no vendieron empatan en
+     val=0 y el orden lo decide el azar del insertion order, así que un anuncio pausado
+     podía desplazar del top 5 a uno que sí consumió presupuesto. */
+  const list=Object.values(ads)
+    .filter(a=>a.spend>0 && a.impr>0)
+    .sort((a,b)=>(b.val-a.val)||(b.spend-a.spend))
+    .slice(0,5);
   const tImpr=sum(D.metaCur,x=>x.impressions)||1;
   setTxt('stat-hook',pct(sum(D.metaCur,x=>x.video_view_3s)/tImpr*100));
   const cell=(l,v)=>'<div class="adm"><div class="l">'+l+'</div><div class="v">'+v+'</div></div>';
