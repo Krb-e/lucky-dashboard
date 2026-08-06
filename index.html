@@ -143,6 +143,11 @@ table.ke-t th.num,table.ke-t td.num{width:110px;text-align:right;}
 .tb-custom span{color:var(--ke-muted);}
 .tb-apply{font-family:'Bitroad',sans-serif;font-size:11px;font-weight:700;color:var(--ke-text);background:rgba(255,112,10,.12);border:1px solid rgba(255,112,10,.3);border-radius:8px;padding:6px 13px;cursor:pointer;}
 .tb-apply:hover{background:rgba(255,112,10,.2);}
+/* Botón naranja lleno para salir a un reporte externo. Va relleno y no translúcido como
+   .tb-apply porque es una acción principal, no un control de la barra de herramientas. */
+.ke-btn-mas{display:inline-flex;align-items:center;gap:8px;font-family:'Bitroad',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#191919;background:var(--ke-orange);border:1px solid var(--ke-orange);border-radius:10px;padding:11px 26px;text-decoration:none;cursor:pointer;transition:filter .15s ease;}
+.ke-btn-mas:hover{filter:brightness(1.12);}
+.ke-btn-mas-wrap{display:flex;justify-content:flex-end;margin:4px 0 26px;}
 
 .ke-kv{font-family:'General Sans',sans-serif;font-weight:500;font-feature-settings:"tnum" 1;font-variant-numeric:tabular-nums;}
 .ke-grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:8px;}
@@ -370,6 +375,10 @@ table.ke-t th.num,table.ke-t td.num{width:110px;text-align:right;}
 
   <div class="ke-sec-head"><div class="ke-sec-line"></div><span class="ke-sec-label">Top creativos · Meta Ads</span><span class="ke-goal-mes">Ranking por valor de compras · hook prom. <b id="stat-hook">—</b></span></div>
   <div id="adcards"></div>
+
+  <div class="ke-btn-mas-wrap">
+    <a class="ke-btn-mas" href="https://datastudio.google.com/u/0/reporting/2182e850-c5c0-419a-ab3b-b9d3a724a22f/page/sin5F" target="_blank" rel="noopener noreferrer">Ver más ↗</a>
+  </div>
 
   <div class="ke-sec-head"><div class="ke-sec-line"></div><span class="ke-sec-label">Conclusiones &amp; accionables · Paid Media</span></div>
   <div id="insights-pm" class="ke-ins-wrap"><div class="ke-pg-sub">Cargando…</div></div>
