@@ -618,6 +618,10 @@ async function sb(table,cols,from,to){
   }
   return out;
 }
+// Campañas de Meta que entran en el ACOS general: son las únicas con objetivo de venta.
+// Las de leads (kb_lead_mayorista, kb_lead_newsletter), tráfico (kb_trafico_ig) y alcance
+// (kb_alcance) no generan facturación atribuida, así que sumaban costo sin sumar retorno.
+const ACOS_META_CAMPS=['kb_prospecting_cbo','kb_retargeting'];
 function calc(meta,google,ga4){
   // Este cliente no tiene Tiendanube: la facturación y las órdenes son las de GA4.
   // Ojo al leerlo: es facturación atribuida por analytics web, suele quedar por debajo
@@ -629,10 +633,15 @@ function calc(meta,google,ga4){
   const gC=sum(google,x=>x.cost),gCl=sum(google,x=>x.clicks);
   const gcpc=ga4.filter(x=>(x.source_medium||'').trim()==='google / cpc');
   const gTx=sum(gcpc,x=>x.transactions),gRev=sum(gcpc,x=>x.total_revenue);
+  // ACOS general = (inversión Meta de las campañas de venta + costo Google Ads) /
+  //               (facturación atribuida por Meta en esas campañas + facturación GA4 de google / cpc).
+  const maM=meta.filter(x=>ACOS_META_CAMPS.includes((x.campaign_name||'').trim()));
+  const maS=sum(maM,x=>x.amount_spent),maV=sum(maM,x=>x.purchases_conv_value);
+  const acosDen=maV+gRev;
   return {facturacion,ordenes,ticket,sesiones,users,conv,
     mS,mCosto:mP?mS/mP:0,mFact:mV,mAcos:mV?mS/mV*100:0,mCpm:mI?mS/mI*1000:0,
     gC,gCosto:gTx?gC/gTx:0,gFact:gRev,gAcos:gRev?gC/gRev*100:0,gCpc:gCl?gC/gCl:0,
-    inversion:mS+gC,acosGeneral:facturacion?(mS+gC)/facturacion*100:0};
+    inversion:mS+gC,acosMetaSpend:maS,acosMetaFact:maV,acosGeneral:acosDen?(maS+gC)/acosDen*100:0};
 }
 let _busy=false;
 async function loadData(){
@@ -656,7 +665,7 @@ function render(c,p,D){
   _last={c,p,D};
   setTxt('kv-fact',moneyKpi(c.facturacion)); setHTML('ks-fact',deltaHTML(c.facturacion,p.facturacion,false));
   setTxt('kv-ticket',moneyKpi(c.ticket)); setHTML('ks-ticket',deltaHTML(c.ticket,p.ticket,false));
-  setTxt('kv-conv',pct(c.conv)); setHTML('ks-conv',deltaHTML(c.conv,p.conv,false));
+  setTxt('kv-conv',pctN(c.conv,2)); setHTML('ks-conv',deltaHTML(c.conv,p.conv,false));
   setTxt('kv-ord',fmtInt(c.ordenes)); setHTML('ks-ord',deltaHTML(c.ordenes,p.ordenes,false));
   setTxt('kv-mspend',moneyKpi(c.mS)); setHTML('ks-mspend',deltaHTML(c.mS,p.mS,false));
   setTxt('kv-mcosto',moneyKpi(c.mCosto)); setHTML('ks-mcosto',deltaHTML(c.mCosto,p.mCosto,true));
