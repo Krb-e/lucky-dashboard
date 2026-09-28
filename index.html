@@ -179,6 +179,40 @@ table.ke-t th.num,table.ke-t td.num{width:110px;text-align:right;}
 .thumb-na{display:flex;align-items:center;justify-content:center;text-align:center;font-size:8px;line-height:1.3;letter-spacing:.1em;text-transform:uppercase;color:var(--ke-muted);background:var(--ke-header);}
 @media(max-width:900px){.xads{grid-template-columns:1fr 1fr;}}
 @media(max-width:560px){.xads{grid-template-columns:1fr;}}
+/* Top 10 prospecting: ranking conmutable + formato condicional contra el promedio de la campaña */
+.tp-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 10px;}
+.tp-pills{display:flex;gap:6px;flex-wrap:wrap;}
+.tp-pill{font-family:'Bitroad',sans-serif;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--ke-muted);background:transparent;border:1px solid var(--ke-border);border-radius:999px;padding:6px 13px;cursor:pointer;transition:all .15s;}
+.tp-pill:hover{color:var(--ke-text);border-color:rgba(255,112,10,.4);}
+.tp-pill.active{color:#191919;background:var(--ke-orange);border-color:var(--ke-orange);font-weight:700;}
+.tp-legend{margin-left:auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ke-muted);}
+.tp-sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:6px;}
+.tp-note{font-size:10px;color:var(--ke-muted);letter-spacing:.03em;margin:0 0 10px;}
+.tp-g2{background:rgba(77,204,128,.30);} .tp-g1{background:rgba(77,204,128,.13);}
+.tp-r1{background:rgba(255,112,90,.13);} .tp-r2{background:rgba(255,112,90,.28);}
+/* En la celda el tinte va más suave que en la leyenda: con .30 las columnas coloreadas
+   pesaban más que el nombre del anuncio. El color del número hace el resto. */
+table.tp-t td.tp-g2{background:rgba(77,204,128,.16);color:var(--ke-ok);}
+table.tp-t td.tp-g1{background:rgba(77,204,128,.07);color:#c9ffdc;}
+table.tp-t td.tp-r1{background:rgba(255,112,90,.07);color:#ffd0c6;}
+table.tp-t td.tp-r2{background:rgba(255,112,90,.15);color:var(--ke-bad);}
+table.tp-t{min-width:1080px;}
+table.tp-t tbody td{vertical-align:middle;white-space:nowrap;padding:10px 12px;}
+table.tp-t thead th{padding:9px 12px;white-space:nowrap;}
+table.tp-t td.tp-ad{min-width:230px;max-width:280px;}
+.tp-adw{display:flex;align-items:center;gap:10px;min-width:0;}
+.tp-rk{font-family:'General Sans',sans-serif;font-size:11px;color:var(--ke-muted);width:16px;flex:none;text-align:right;}
+.thumb-sm{width:44px;height:44px;border-radius:7px;object-fit:cover;background:linear-gradient(135deg,#333,#222);border:1px solid var(--ke-border);flex:none;}
+.thumb-sm.thumb-na{font-size:6px;}
+.tp-nm{min-width:0;}
+.tp-nm .n{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;}
+.tp-nm a{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ke-orange);text-decoration:none;}
+.tp-nm a:hover{text-decoration:underline;}
+td.tp-bar-c{background-image:linear-gradient(90deg,rgba(255,112,10,.16),rgba(255,112,10,.16));background-repeat:no-repeat;background-position:right center;}
+table.tp-t td.tp-an{text-align:left;font-family:'General Sans',sans-serif;font-size:11px;line-height:1.45;color:rgba(230,230,230,.82);min-width:240px;max-width:300px;white-space:normal;}
+table.tp-t th.tp-an-h{text-align:left;}
+.tp-tag{display:inline-block;font-size:8px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ke-muted);border:1px solid var(--ke-border);border-radius:4px;padding:0 4px;margin-left:4px;vertical-align:1px;}
+@media(max-width:560px){.tp-legend{margin-left:0;}}
 .adm{background:#191919;border:1px solid var(--ke-border);border-radius:8px;padding:8px 10px;}
 .adm .l{font-size:8px;letter-spacing:1.2px;text-transform:uppercase;color:var(--ke-muted);}
 .adm .v{font-size:15px;font-family:'General Sans',sans-serif;color:var(--ke-text);margin-top:3px;}
@@ -407,8 +441,24 @@ table.ke-t th.num,table.ke-t td.num{width:110px;text-align:right;}
   </div>
   <div id="excl-ads"></div>
 
-  <div class="ke-sec-head"><div class="ke-sec-line"></div><span class="ke-sec-label">Top creativos · Meta Ads</span><span class="ke-goal-mes">Ranking por valor de compras · hook prom. <b id="stat-hook">—</b></span></div>
-  <div id="adcards"></div>
+  <div class="ke-sec-head"><div class="ke-sec-line"></div><span class="ke-sec-label">Top 10 anuncios · Prospecting</span><span class="ke-goal-mes">Prom. prospecting · ACOS <b id="tp-avg-acos">—</b> · hook <b id="stat-hook">—</b> · hold <b id="tp-avg-hold">—</b></span></div>
+  <div class="tp-bar">
+    <div class="tp-pills" role="tablist" aria-label="Ranking de anuncios">
+      <button class="tp-pill active" data-rk="rent" onclick="tpRank('rent',this)">Más rentables</button>
+      <button class="tp-pill" data-rk="hook" onclick="tpRank('hook',this)">Mejor hook rate</button>
+      <button class="tp-pill" data-rk="hold" onclick="tpRank('hold',this)">Mejor hold rate</button>
+    </div>
+    <div class="tp-legend"><span class="tp-sw tp-g2"></span>muy arriba del prom. <span class="tp-sw tp-g1"></span>arriba <span class="tp-sw tp-r1"></span>abajo <span class="tp-sw tp-r2"></span>muy abajo</div>
+  </div>
+  <div class="tp-note" id="tp-note"></div>
+  <div class="ke-block"><div class="ke-block-top"></div>
+    <div class="ke-scroll">
+      <table class="ke-t tp-t">
+        <thead><tr><th>Anuncio</th><th>Inversión</th><th>Compras</th><th class="acc">Valor compras</th><th>ACOS</th><th>CTR</th><th>Costo/visita</th><th>Hook rate</th><th>Hold rate</th><th class="tp-an-h">Análisis</th></tr></thead>
+        <tbody id="tp-tbody"><tr><td colspan="10" class="ke-pg-sub">Cargando…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
 
   <div class="ke-btn-mas-wrap">
     <a class="ke-btn-mas" href="https://datastudio.google.com/u/0/reporting/2182e850-c5c0-419a-ab3b-b9d3a724a22f/page/sin5F" target="_blank" rel="noopener noreferrer">Ver más ↗</a>
@@ -774,28 +824,153 @@ function render(c,p,D){
      podía desplazar del top 5 a uno que sí consumió presupuesto. */
   /* Se sacan del ranking los anuncios de las campañas fuera del ACOS: tienen su propio
      desglose más abajo y acá solo desplazaban creativos de venta, porque val=0 siempre. */
-  const list=Object.values(ads)
-    .filter(a=>a.spend>0 && a.impr>0 && !_exM.includes(cmpNorm(a.camp)))
-    .sort((a,b)=>(b.val-a.val)||(b.spend-a.spend))
-    .slice(0,5);
-  const tImpr=sum(D.metaCur,x=>x.impressions)||1;
-  setTxt('stat-hook',pct(sum(D.metaCur,x=>x.video_view_3s)/tImpr*100));
-  const cell=(l,v)=>'<div class="adm"><div class="l">'+l+'</div><div class="v">'+v+'</div></div>';
-  document.getElementById('adcards').innerHTML=list.map(a=>{
-    const cpm=a.impr?a.spend/a.impr*1000:0,ctr=a.impr?a.lpv/a.impr*100:0,cpv=a.lpv?a.spend/a.lpv:0,acos=a.val?a.spend/a.val*100:0,hook=a.impr?a.v3/a.impr*100:0,hold=a.impr?a.v100/a.impr*100:0;
-    const esc=v=>String(v||'').replace(/</g,'&lt;').replace(/"/g,'&quot;');
-    const img=thumbHTML('thumb-lg',a,esc);
-    const chip=a.camp?'<span class="ke-chip ke-c-neutral" style="margin-left:8px;">'+esc(a.camp)+'</span>':'';
-    const link=a.link?'<a class="adcard-link" href="'+esc(a.link)+'" target="_blank" rel="noopener">ver anuncio ↗</a>':'';
-    const titulo='<div class="adcard-h"><div class="adcard-t">'+esc(a.titulo)+chip+'</div>'+link+'</div>';
-    const copy=a.copy?('<div class="copy">'+a.copy.replace(/</g,'&lt;')+'</div>'):'';
-    return '<div class="adcard">'+img+'<div style="flex:1;min-width:0;">'+titulo+copy+'<div class="adgrid-m">'+
-      cell('Impresiones',fmtInt(a.impr))+cell('CPM',moneyKpi(cpm))+cell('CTR',pct(ctr))+cell('Visitas',fmtInt(a.lpv))+cell('Costo/visita',moneyKpi(cpv))+
-      cell('Compras',fmtInt(a.pur))+cell('Valor compras',moneyKpi(a.val))+cell('ACOS',pct(acos))+cell('Hook rate',pct(hook))+cell('Hold 100%',pct(hold))+
-      '</div></div></div>';
-  }).join('')||'<div class="ke-pg-sub">Sin anuncios en el período.</div>';
-
+  renderTopProspecting(D);
   renderExcluidas(D,ads);
+}
+/* TOP 10 · PROSPECTING
+   Solo entran las campañas de prospecting (conversión a público frío): retargeting y
+   Advantage tienen otra lógica de costo y mezclados distorsionaban el ranking.
+   Se agrega aparte de `ads` porque ese mapa agrupa por ad_name sin mirar la campaña, y el
+   mismo nombre puede correr en prospecting y en otra campaña a la vez.
+   - Hook rate = reproducciones de 3 s / impresiones.
+   - Hold rate = reproducciones al 100% / reproducciones de 3 s (de los que engancharon,
+     cuántos lo ven entero). Antes se mostraba v100/impresiones, que mezcla hook y hold.
+   - Los GIF se reproducen en loop y Meta les cuenta más vistas al 100% que de 3 s: hook y
+     hold salen inflados (~90% / ~100%), así que no entran a esos rankings ni al promedio.
+   - El formato condicional compara cada anuncio contra el promedio PONDERADO de
+     prospecting del período, no contra los otros 9 de la tabla. */
+let TP={sel:'rent',D:null};
+const TP_MIN_IMPR=1000;
+function tpRank(k,el){
+  TP.sel=k;
+  document.querySelectorAll('.tp-pill').forEach(p=>p.classList.toggle('active',p.dataset.rk===k));
+  if(TP.D) renderTopProspecting(TP.D);
+}
+function renderTopProspecting(D){
+  TP.D=D;
+  const tb=document.getElementById('tp-tbody'); if(!tb) return;
+  const esc=v=>String(v||'').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+  const m={};
+  D.metaCur.filter(r=>/prospecting/i.test(r.campaign_name||'')).forEach(x=>{
+    const k=x.ad_name||x.ad_image_url||'(s/anuncio)';
+    const a=m[k]=m[k]||{imgBk:'',imgLive:'',titulo:x.ad_name||'Sin nombre',link:'',impr:0,spend:0,lpv:0,pur:0,val:0,v3:0,v100:0};
+    if(x.ad_image_backup_url)a.imgBk=x.ad_image_backup_url;
+    if(x.ad_image_url)a.imgLive=x.ad_image_url;
+    if(!a.link&&x.ad_preview_link)a.link=x.ad_preview_link;
+    a.impr+=+x.impressions||0;a.spend+=+x.amount_spent||0;a.lpv+=+x.landing_page_views||0;
+    a.pur+=+x.website_purchases||0;a.val+=+x.purchases_conv_value||0;
+    a.v3+=+x.video_view_3s||0;a.v100+=+x.video_watch_100||0;
+  });
+  const all=Object.values(m).filter(a=>a.spend>0&&a.impr>0);
+  all.forEach(a=>{
+    a.loop=a.v3>0&&(/^gif/i.test(a.titulo)||a.v100>=a.v3*0.9);
+    a.video=a.v3>0;
+    a.acos=a.val?a.spend/a.val*100:null;
+    a.ctr=a.lpv/a.impr*100;
+    a.cpv=a.lpv?a.spend/a.lpv:null;
+    a.hook=a.video?a.v3/a.impr*100:null;
+    a.hold=a.video?Math.min(a.v100/a.v3,1)*100:null;
+    a.neto=a.val-a.spend;
+  });
+  // Promedios ponderados de la campaña; hook/hold solo sobre videos que no loopean.
+  const S=k=>all.reduce((s,a)=>s+a[k],0);
+  const vids=all.filter(a=>a.video&&!a.loop);
+  const Vs=k=>vids.reduce((s,a)=>s+a[k],0);
+  const M={
+    acos:S('val')?S('spend')/S('val')*100:null,
+    ctr:S('impr')?S('lpv')/S('impr')*100:null,
+    cpv:S('lpv')?S('spend')/S('lpv'):null,
+    cpa:S('pur')?S('spend')/S('pur'):null,
+    hook:Vs('impr')?Vs('v3')/Vs('impr')*100:null,
+    hold:Vs('v3')?Vs('v100')/Vs('v3')*100:null
+  };
+  setTxt('tp-avg-acos',M.acos!=null?pct(M.acos):'—');
+  setTxt('stat-hook',M.hook!=null?pct(M.hook):'—');
+  setTxt('tp-avg-hold',M.hold!=null?pct(M.hold):'—');
+
+  let list,note;
+  if(TP.sel==='hook'||TP.sel==='hold'){
+    const k=TP.sel;
+    // El hold se divide por las vistas de 3 s: con 20 o 30 vistas un par de completas lo
+    // disparan (un carrusel con hook de 1,5% salía 3º), así que pide además 200 vistas.
+    list=vids.filter(a=>a.impr>=TP_MIN_IMPR&&(k==='hook'||a.v3>=200)).sort((a,b)=>b[k]-a[k]);
+    note=(k==='hook'?'Hook rate = reproducciones de 3 s / impresiones · solo videos con 1.000+ impresiones'
+      :'Hold rate = reproducciones al 100% / reproducciones de 3 s · solo videos con 1.000+ impresiones y 200+ vistas de 3 s')
+      +' · sin GIF (el loop infla las vistas) · '+list.length+' de '+all.length+' anuncios califican';
+  }else{
+    list=all.slice().sort((a,b)=>(b.neto-a.neto)||(b.val-a.val));
+    note='Ordenado por retorno neto (valor de compras − inversión) · '+all.length+' anuncios de prospecting con inversión en el período';
+  }
+  list=list.slice(0,10);
+  setTxt('tp-note',note);
+  if(!list.length){tb.innerHTML='<tr><td colspan="10" class="ke-pg-sub">'+(all.length?'Ningún anuncio de video llega a 1.000 impresiones en el período.':'Sin anuncios de prospecting con inversión en el período.')+'</td></tr>';return;}
+
+  // Formato condicional: cociente contra el promedio (invertido si "menos es mejor").
+  const tier=(v,avg,up)=>{
+    if(v==null||avg==null||!avg) return '';
+    const r=up?v/avg:(v?avg/v:9);
+    return r>=1.25?'tp-g2':r>=1.05?'tp-g1':r>0.95?'':r>0.8?'tp-r1':'tp-r2';
+  };
+  const maxVal=Math.max(...list.map(a=>a.val),1);
+  tb.innerHTML=list.map((a,i)=>{
+    const tag=a.loop?'<span class="tp-tag">gif</span>':(!a.video?'<span class="tp-tag">estático</span>':'');
+    const lk=a.link?'<a href="'+esc(a.link)+'" target="_blank" rel="noopener">ver anuncio ↗</a>':'';
+    const bar=a.val?' class="tp-bar-c" style="background-size:'+(a.val/maxVal*100).toFixed(1)+'% 70%"':'';
+    const vidCell=(v,avg)=>a.loop?'<td title="GIF en loop: métrica inflada">'+pct(v)+'</td>':'<td class="'+tier(v,avg,true)+'">'+(v==null?'—':pct(v))+'</td>';
+    return '<tr>'
+      +'<td class="tp-ad"><div class="tp-adw"><span class="tp-rk">'+(i+1)+'</span>'+thumbHTML('thumb-sm',a,esc)
+      +'<div class="tp-nm"><span class="n" title="'+esc(a.titulo)+'">'+esc(a.titulo)+tag+'</span>'+lk+'</div></div></td>'
+      +'<td>'+moneyKpi(a.spend)+'</td>'
+      +'<td>'+fmtInt(a.pur)+'</td>'
+      +'<td'+bar+'>'+(a.val?moneyKpi(a.val):'—')+'</td>'
+      +'<td class="'+(a.acos==null?'tp-r2':tier(a.acos,M.acos,false))+'">'+(a.acos==null?'sin ventas':pct(a.acos))+'</td>'
+      +'<td class="'+tier(a.ctr,M.ctr,true)+'">'+pct(a.ctr)+'</td>'
+      +'<td class="'+(a.cpv==null?'':tier(a.cpv,M.cpv,false))+'">'+(a.cpv==null?'—':moneyKpi(a.cpv))+'</td>'
+      +vidCell(a.hook,M.hook)+vidCell(a.hold,M.hold)
+      +'<td class="tp-an">'+esc(tpAnalisis(a,M))+'</td>'
+      +'</tr>';
+  }).join('');
+}
+/* Análisis de una línea (≤150 caracteres) armado con reglas sobre las métricas del anuncio
+   contra el promedio de prospecting. Las frases van por prioridad y se agregan mientras
+   entren: rentabilidad → creativo → muestra chica → acción. */
+function tpAnalisis(a,M){
+  const P=[], r=(v,avg)=>(v!=null&&avg)?v/avg:1;
+  if(!a.pur) P.push('Sin ventas con '+moneyC(a.spend)+' invertidos'+(a.lpv?' y '+fmtInt(a.lpv)+' visitas':'')+'.');
+  else if(M.acos&&a.acos<=M.acos*0.75) P.push('ACOS '+pct(a.acos)+' vs '+pct(M.acos)+' prom.: de los más rentables.');
+  else if(M.acos&&a.acos>=M.acos*1.3) P.push('ACOS '+pct(a.acos)+' vs '+pct(M.acos)+' prom.: vende, pero caro.');
+  else P.push('ACOS '+pct(a.acos)+', en línea con el prom.');
+  let creaMala=false;
+  if(a.loop) P.push('GIF en loop: hook y hold inflados, juzgarlo por ventas.');
+  else if(a.video){
+    const h=r(a.hook,M.hook), d=r(a.hold,M.hold);
+    const H=h>=1.1?1:h<=0.9?-1:0, O=d>=1.1?1:d<=0.9?-1:0;
+    creaMala=H<0&&O<0;
+    P.push(
+      H>0&&O>0?'Hook y hold arriba del prom.: creativo sólido.':
+      H>0&&O<0?'Engancha pero no retiene: reforzar el video después del 3er segundo.':
+      H<0&&O>0?'Retiene pero engancha poco: probar otro arranque.':
+      H<0&&O<0?'Hook y hold bajos: el creativo no conecta.':
+      H>0?'Buen hook ('+pct(a.hook)+').':
+      H<0?'Hook flojo ('+pct(a.hook)+'): probar otro arranque.':
+      O>0?'Buen hold ('+pct(a.hold)+'): el video retiene.':
+      O<0?'Hold bajo: el video pierde gente antes del final.':
+      'Hook y hold en el promedio.');
+  }else{
+    const c=r(a.ctr,M.ctr);
+    creaMala=c<=0.9;
+    if(c>=1.1) P.push('Estático con CTR alto: la pieza tracciona.');
+    else if(c<=0.9) P.push('Estático con CTR bajo: probar otra pieza.');
+  }
+  if(a.impr<1500) P.push('Muestra chica: leer con cautela.');
+  else if(a.pur===1) P.push('Una sola venta: falta volumen para concluir.');
+  else if(a.pur>=2&&M.acos&&a.acos<=M.acos*0.75&&!creaMala) P.push('Candidato a escalar.');
+  else if(!a.pur&&M.cpa&&a.spend>=M.cpa*1.5) P.push('Gastó 1,5 CPA sin vender: evaluar pausarlo.');
+  // Clickean como el resto pero compran caro: el problema está después del anuncio.
+  else if(a.pur&&M.acos&&a.acos>=M.acos*1.3&&M.ctr&&a.ctr>=M.ctr*0.95) P.push('Revisar oferta o landing.');
+  let out='';
+  for(const s of P){const n=out?out+' '+s:s; if(n.length<=150) out=n;}
+  return out||P[0].slice(0,150);
 }
 /* Miniatura de un anuncio de Meta: backup de Storage primero, URL firmada como respaldo
    (onerror la reemplaza una sola vez) y placeholder si no hay ninguna de las dos. */
